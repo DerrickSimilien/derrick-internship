@@ -4,6 +4,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./NewItems.css"; // We'll add spacing here
+import Countdown from "../UI/Countdown";
 
 const NewItems = () => {
   const [items, setItems] = useState([]);
@@ -72,7 +73,7 @@ const NewItems = () => {
                     </div>
 
                     {item.expiryDate && (
-                      <div className="de_countdown">{item.expiryDate}</div>
+                    <Countdown expiryTime={item.expiryDate}/> 
                     )}
 
                     <div className="nft__item_wrap">
