@@ -1,46 +1,44 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"; // For getting the dynamic `authorId`
+import { useParams } from "react-router-dom";
 import AuthorBanner from "../images/author_banner.jpg";
 import AuthorItems from "../components/author/AuthorItems";
 import { Link } from "react-router-dom";
 
 const Author = () => {
-  // Capture the `authorId` from the URL
-  const { authorId } = useParams();
-  const [authorData, setAuthorData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [items, setItems] = useState([]);
+  const [authorCollection, setAthorCollection] = useState([]);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followerCount, setFollowerCount] = useState(0);
 
-  // Fetch author data dynamically based on authorId
+  const { authorId } = useParams(); 
+
+  async function getData() {
+    const response = await fetch(`https://us-central1-nft-cloud-functions.cloudfunctions.net/authors?author=${authorId}`);
+    const data = await response.json();
+    setItems(data);
+    setAthorCollection(data.nftCollection);
+  }
+
   useEffect(() => {
-    const fetchAuthorData = async () => {
-      try {
-        const res = await fetch(
-          `https://us-central1-nft-cloud-functions.cloudfunctions.net/authors?author=${authorId}`
-        );
-        const data = await res.json();
-        console.log("Fetched author data:", data); // Log API response for debugging
-        setAuthorData(data.author || {}); // Set author data
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching author data:", err);
-        setLoading(false);
-      }
-    };
+    getData();
+  }, []);
 
-    fetchAuthorData();
-  }, [authorId]);
+  // Update follower count when data is received
+  useEffect(() => {
+    if (items?.followers !== undefined) {
+      setFollowerCount(items.followers);
+    }
+  }, [items]);
 
-  // If the data is still loading, display a loading message
-  if (loading) {
-    return <p>Loading author details...</p>;
-  }
+  const handleFollowClick = () => {
+    if (isFollowing) {
+      setFollowerCount(prev => prev - 1);
+    } else {
+      setFollowerCount(prev => prev + 1);
+    }
+    setIsFollowing(prev => !prev);
+  };
 
-  // If no author data is found, display a message
-  if (!authorData) {
-    return <p>Author not found.</p>;
-  }
-
-  // Render author profile dynamically
   return (
     <div id="wrapper">
       <div className="no-bottom no-top" id="content">
@@ -50,6 +48,7 @@ const Author = () => {
           id="profile_banner"
           aria-label="section"
           className="text-light"
+          data-bgimage="url(images/author_banner.jpg) top"
           style={{ background: `url(${AuthorBanner}) top` }}
         ></section>
 
@@ -60,17 +59,14 @@ const Author = () => {
                 <div className="d_profile de-flex">
                   <div className="de-flex-col">
                     <div className="profile_avatar">
-                      {/* Display author avatar dynamically */}
-                      <img src={authorData.avatar} alt={authorData.name} />
+                      <img src={items?.authorImage} alt="" />
                       <i className="fa fa-check"></i>
                       <div className="profile_name">
                         <h4>
-                          {authorData.name}
-                          <span className="profile_username">
-                            @{authorData.username}
-                          </span>
+                          {items?.authorName}
+                          <span className="profile_username">@{items?.tag}</span>
                           <span id="wallet" className="profile_wallet">
-                            {authorData.wallet}
+                            {items?.address}
                           </span>
                           <button id="btn_copy" title="Copy Text">
                             Copy
@@ -79,14 +75,13 @@ const Author = () => {
                       </div>
                     </div>
                   </div>
+
                   <div className="profile_follow de-flex">
                     <div className="de-flex-col">
-                      <div className="profile_follower">
-                        {authorData.followers} followers
-                      </div>
-                      <Link to="#" className="btn-main">
-                        Follow
-                      </Link>
+                      <div className="profile_follower">{followerCount} followers</div>
+                      <button className="btn-main" onClick={handleFollowClick}>
+                        {isFollowing ? "Unfollow" : "Follow"}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -94,8 +89,7 @@ const Author = () => {
 
               <div className="col-md-12">
                 <div className="de_tab tab_simple">
-                  {/* Pass the authorId to AuthorItems component */}
-                  <AuthorItems authorId={authorId} />
+                  <AuthorItems authorCollections={authorCollection} items={items} />
                 </div>
               </div>
             </div>

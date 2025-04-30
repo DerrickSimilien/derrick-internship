@@ -1,26 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const AuthorItems = ({ authorId }) => {
-  const [nfts, setNfts] = useState([]);
+const AuthorItems = ({ authorCollections, items }) => {
+ 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchNFTs = async () => {
-      try {
-        const res = await fetch(
-          `https://us-central1-nft-cloud-functions.cloudfunctions.net/authors?author=${authorId}`
-        );
-        const data = await res.json();
-        setNfts(data.nftCollection || []);
         setLoading(false);
-      } catch (err) {
-        console.error("Error fetching NFTs:", err);
-      }
-    };
-
-    fetchNFTs();
-  }, [authorId]);
+  }, []);
 
   return (
     <div className="de_tab_content">
@@ -29,12 +16,12 @@ const AuthorItems = ({ authorId }) => {
           {loading ? (
             <p>Loading NFTs...</p>
           ) : (
-            nfts.map((nft, index) => (
+            authorCollections.map((nft, index) => (
               <div className="col-lg-3 col-md-6 col-sm-6 col-xs-12" key={index}>
                 <div className="nft__item">
                   <div className="author_list_pp">
                     <Link to="">
-                      <img className="lazy" src={nft.authorImage} alt="" />
+                      <img className="lazy" src={items.authorImage} alt="" />
                       <i className="fa fa-check"></i>
                     </Link>
                   </div>
