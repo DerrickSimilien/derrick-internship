@@ -1,41 +1,71 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import EthImage from "../images/ethereum.svg";
-import AuthorImage from "../images/author_thumbnail.jpg";
 
 const ItemDetails = () => {
-  const { id } = useParams(); // Grabbing the 'id' from the URL
+  const { nftId } = useParams();
   const [nft, setNft] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    window.scrollTo(0, 0); // Scroll to top on every change
+    window.scrollTo(0, 0);
 
     const fetchNFT = async () => {
       try {
-        // Fetch the data from the same API, but ensure it's dynamic based on 'id'
         const res = await fetch(
-          `https://us-central1-nft-cloud-functions.cloudfunctions.net/authors?author=73855012` // You can adjust this API call if needed
+          `https://us-central1-nft-cloud-functions.cloudfunctions.net/itemDetails?nftId=${nftId}`
         );
         const data = await res.json();
-        const nftCollection = data.nftCollection || [];
-        
-        // Find the NFT in the collection that matches the URL 'id'
-        const foundNFT = nftCollection.find((n) => n.id === parseInt(id));
-        
-        setNft(foundNFT);  // Set the NFT for details
-        setLoading(false); // Set loading to false after fetching the NFT
+        setNft(data);
+        setLoading(false);
       } catch (err) {
         console.error("Error fetching NFT details:", err);
       }
     };
 
-    fetchNFT(); // Call the fetch function
+    fetchNFT();
+  }, [nftId]);
 
-  }, [id]); // The effect will re-run every time 'id' changes
+  if (loading) {
+    return (
+      <div className="container mt-5">
+        <div className="row">
+          <div className="col-md-6 text-center">
+            <Skeleton height={400} width={400} />
+          </div>
+          <div className="col-md-6">
+            <h2><Skeleton width={200} /></h2>
 
-  if (loading) return <p>Loading NFT details...</p>; // Display loading text while fetching
-  if (!nft) return <p>No NFT found.</p>; // Display if the NFT is not found
+            <div className="item_info_counts mb-3">
+              <Skeleton width={80} height={20} className="me-3" />
+              <Skeleton width={80} height={20} />
+            </div>
+
+            <p><Skeleton count={4} /></p>
+
+            <h6>Owner</h6>
+            <div className="d-flex align-items-center mb-3">
+              <Skeleton circle={true} height={50} width={50} className="me-3" />
+              <Skeleton width={120} />
+            </div>
+
+            <h6>Creator</h6>
+            <div className="d-flex align-items-center mb-3">
+              <Skeleton circle={true} height={50} width={50} className="me-3" />
+              <Skeleton width={120} />
+            </div>
+
+            <h6>Price</h6>
+            <Skeleton width={100} height={30} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!nft) return <p>No NFT found.</p>;
 
   return (
     <div id="wrapper">
@@ -46,7 +76,7 @@ const ItemDetails = () => {
             <div className="row">
               <div className="col-md-6 text-center">
                 <img
-                  src={nft.nftImage} // Display the NFT image
+                  src={nft.nftImage}
                   className="img-fluid img-rounded mb-sm-30 nft-image"
                   alt={nft.title}
                 />
@@ -57,14 +87,13 @@ const ItemDetails = () => {
 
                   <div className="item_info_counts">
                     <div className="item_info_views">
-                      <i className="fa fa-eye"></i>
-                      {nft.views}
+                      <i className="fa fa-eye"></i> {nft.views}
                     </div>
                     <div className="item_info_like">
-                      <i className="fa fa-heart"></i>
-                      {nft.likes}
+                      <i className="fa fa-heart"></i> {nft.likes}
                     </div>
                   </div>
+
                   <p>{nft.description}</p>
 
                   <div className="d-flex flex-row">
@@ -72,13 +101,13 @@ const ItemDetails = () => {
                       <h6>Owner</h6>
                       <div className="item_author">
                         <div className="author_list_pp">
-                          <Link to={`/author/${nft.authorId}`}>
-                            <img className="lazy" src={nft.authorImage || AuthorImage} alt="" />
+                          <Link to={`/author/${nft.ownerId}`}>
+                            <img className="lazy" src={nft.ownerImage} alt="" />
                             <i className="fa fa-check"></i>
                           </Link>
                         </div>
                         <div className="author_list_info">
-                          <Link to={`/author/${nft.authorId}`}>{nft.authorName}</Link>
+                          <Link to={`/author/${nft.ownerId}`}>{nft.ownerName}</Link>
                         </div>
                       </div>
                     </div>
@@ -89,13 +118,13 @@ const ItemDetails = () => {
                       <h6>Creator</h6>
                       <div className="item_author">
                         <div className="author_list_pp">
-                          <Link to={`/author/${nft.authorId}`}>
-                            <img className="lazy" src={nft.authorImage || AuthorImage} alt="" />
+                          <Link to={`/author/${nft.creatorId}`}>
+                            <img className="lazy" src={nft.creatorImage} alt="" />
                             <i className="fa fa-check"></i>
                           </Link>
                         </div>
                         <div className="author_list_info">
-                          <Link to={`/author/${nft.authorId}`}>{nft.authorName}</Link>
+                          <Link to={`/author/${nft.creatorId}`}>{nft.creatorName}</Link>
                         </div>
                       </div>
                     </div>
@@ -107,9 +136,7 @@ const ItemDetails = () => {
                       <img src={EthImage} alt="Ethereum" />
                       <span>{nft.price} ETH</span>
                     </div>
-
                   </div>
-
                 </div>
               </div>
             </div>

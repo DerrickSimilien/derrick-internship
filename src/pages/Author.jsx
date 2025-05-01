@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 const Author = () => {
   const [items, setItems] = useState([]);
-  const [authorCollection, setAthorCollection] = useState([]);
+  const [authorCollection, setAuthorCollection] = useState([]);
   const [isFollowing, setIsFollowing] = useState(false);
   const [followerCount, setFollowerCount] = useState(0);
 
@@ -16,7 +16,7 @@ const Author = () => {
     const response = await fetch(`https://us-central1-nft-cloud-functions.cloudfunctions.net/authors?author=${authorId}`);
     const data = await response.json();
     setItems(data);
-    setAthorCollection(data.nftCollection);
+    setAuthorCollection(data.nftCollection); 
   }
 
   useEffect(() => {
