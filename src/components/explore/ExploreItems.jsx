@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import ItemsCard from "../ItemCard";
+import AOS from 'aos';
+import 'aos/dist/aos.css'; // Import AOS styles
 
 const ExploreItems = () => {
   const [nfts, setNfts] = useState([]);
@@ -25,6 +27,9 @@ const ExploreItems = () => {
     };
 
     fetchNFTs();
+
+    // Initialize AOS animation
+    AOS.init();
   }, []);
 
   // 💡 Function to sort NFTs based on filter
@@ -67,6 +72,7 @@ const ExploreItems = () => {
               key={item.id}
               className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12"
               style={{ display: "block", backgroundSize: "cover" }}
+              data-aos="fade-up" // AOS effect
             >
               <ItemsCard Itemcard={item} />
             </div>

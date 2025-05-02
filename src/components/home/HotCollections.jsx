@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Slider from "react-slick"; // Import Slider from react-slick
-import "slick-carousel/slick/slick.css"; // Import slick-carousel CSS
-import "slick-carousel/slick/slick-theme.css"; // Import slick-carousel theme CSS
-import './HotCollections.css'; // Import the CSS file
-
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import './HotCollections.css'; 
+import AOS from 'aos';
+import 'aos/dist/aos.css'; // Import AOS styles
 
 const HotCollections = () => {
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    AOS.init(); // Initialize AOS
     const fetchCollections = async () => {
       try {
         const response = await fetch(
@@ -55,7 +57,7 @@ const HotCollections = () => {
         <div className="row">
           <div className="col-lg-12">
             <div className="text-center">
-              <h2>Hot Collections</h2>
+              <h2 data-aos="fade-up">Hot Collections</h2>
               <div className="small-border bg-color-2"></div>
             </div>
           </div>
@@ -64,31 +66,22 @@ const HotCollections = () => {
             <p className="text-center w-100">Loading collections...</p>
           ) : (
             <Slider
-              dots={false} // Disable dots navigation
-              infinite={true} // Infinite scroll
-              speed={500} // Animation speed
-              slidesToShow={4} // Show 4 cards at a time
-              slidesToScroll={1} // Scroll 1 card at a time
-              arrows={true} // Enable arrows navigation
-              prevArrow={<SamplePrevArrow />} // Custom previous arrow
-              nextArrow={<SampleNextArrow />} // Custom next arrow
+              dots={false}
+              infinite={true}
+              speed={500}
+              slidesToShow={4}
+              slidesToScroll={1}
+              arrows={true}
+              prevArrow={<SamplePrevArrow />}
+              nextArrow={<SampleNextArrow />}
               responsive={[
-                {
-                  breakpoint: 1024,
-                  settings: { slidesToShow: 3 }, // 3 cards on medium screens
-                },
-                {
-                  breakpoint: 768,
-                  settings: { slidesToShow: 2 }, // 2 cards on small screens
-                },
-                {
-                  breakpoint: 480,
-                  settings: { slidesToShow: 1 }, // 1 card on extra small screens
-                },
+                { breakpoint: 1024, settings: { slidesToShow: 3 } },
+                { breakpoint: 768, settings: { slidesToShow: 2 } },
+                { breakpoint: 480, settings: { slidesToShow: 1 } },
               ]}
             >
               {collections.map((item) => (
-                <div key={item.id}>
+                <div key={item.id} data-aos="fade-up">
                   <div className="nft_coll">
                     <div className="nft_wrap">
                       <Link to={`/item-details/${item.nftId}`}>

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import "./NewItems.css"; // We'll add spacing here
+import "./NewItems.css";
 import Countdown from "../UI/Countdown";
 
 const NewItems = () => {
@@ -46,7 +46,7 @@ const NewItems = () => {
     <section id="section-items" className="no-bottom">
       <div className="container">
         <div className="row">
-          <div className="col-lg-12">
+          <div className="col-lg-12" data-aos="fade-up">
             <div className="text-center">
               <h2>New Items</h2>
               <div className="small-border bg-color-2"></div>
@@ -57,8 +57,13 @@ const NewItems = () => {
             <p className="text-center w-100">Loading new items...</p>
           ) : (
             <Slider {...settings}>
-              {items.map((item) => (
-                <div key={item.id} className="carousel-spacing">
+              {items.map((item, index) => (
+                <div
+                  key={item.id}
+                  className="carousel-spacing"
+                  data-aos="fade-up"
+                  data-aos-delay={index * 100}
+                >
                   <div className="nft__item">
                     <div className="author_list_pp">
                       <Link
@@ -72,9 +77,7 @@ const NewItems = () => {
                       </Link>
                     </div>
 
-                    {item.expiryDate && (
-                    <Countdown expiryTime={item.expiryDate}/> 
-                    )}
+                    {item.expiryDate && <Countdown expiryTime={item.expiryDate} />}
 
                     <div className="nft__item_wrap">
                       <div className="nft__item_extra">
@@ -82,15 +85,9 @@ const NewItems = () => {
                           <button>Buy Now</button>
                           <div className="nft__item_share">
                             <h4>Share</h4>
-                            <a href="">
-                              <i className="fa fa-facebook fa-lg"></i>
-                            </a>
-                            <a href="">
-                              <i className="fa fa-twitter fa-lg"></i>
-                            </a>
-                            <a href="">
-                              <i className="fa fa-envelope fa-lg"></i>
-                            </a>
+                            <a href=""><i className="fa fa-facebook fa-lg"></i></a>
+                            <a href=""><i className="fa fa-twitter fa-lg"></i></a>
+                            <a href=""><i className="fa fa-envelope fa-lg"></i></a>
                           </div>
                         </div>
                       </div>

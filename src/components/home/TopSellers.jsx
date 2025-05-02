@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AuthorImage from "../../images/author_thumbnail.jpg"; // fallback image
+import AOS from 'aos';
+import 'aos/dist/aos.css'; // Import AOS styles
 
 const TopSellers = () => {
   const [sellers, setSellers] = useState([]);
 
   useEffect(() => {
+    AOS.init(); // Initialize AOS
     const fetchTopSellers = async () => {
       try {
         const response = await fetch(
@@ -27,14 +30,14 @@ const TopSellers = () => {
         <div className="row">
           <div className="col-lg-12">
             <div className="text-center">
-              <h2>Top Sellers</h2>
+              <h2 data-aos="fade-up">Top Sellers</h2>
               <div className="small-border bg-color-2"></div>
             </div>
           </div>
           <div className="col-md-12">
             <ol className="author_list">
               {sellers.map((seller, index) => (
-                <li key={index}>
+                <li key={index} data-aos="fade-up">
                   <div className="author_list_pp">
                     <Link to={`/author/${seller.authorId}`}>
                       <img
